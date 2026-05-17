@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var taskGroups = TaskGroup.sampleData
     @State private var selectedGroup: TaskGroup?
     @State private var columnVisilibity: NavigationSplitViewVisibility = .all
+    @State private var isShowingAddGroup = false
     
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisilibity){
@@ -23,6 +24,14 @@ struct ContentView: View {
             }
             .navigationTitle("Tracker ToDo App")
             .listStyle(.sidebar)
+            
+            .toolbar {
+                Button {
+                    isShowingAddGroup = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
         } detail: {
             if let group = selectedGroup {
                 if let index = taskGroups.firstIndex(where: {$0.id == group.id}){
@@ -30,6 +39,12 @@ struct ContentView: View {
                 }
             }else {
                 ContentUnavailableView("Select a group", image: "sidebar.left")
+            }
+        }
+        .sheet(isPresented: $isShowingAddGroup) {
+            NewGroupView { newGroup in
+                taskGroups.append(newGroup)
+                selectedGroup = newGroup
             }
         }
     }
