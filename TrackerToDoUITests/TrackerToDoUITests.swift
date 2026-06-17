@@ -91,12 +91,32 @@ final class TrackerToDoUITests: XCTestCase {
         }
     }
     
+   // func testAddingTask() {
+     //   let app = XCUIApplication()
+       // app.launch()
+        //let profileButton = app.buttons["ProfileCard_Student"]
+        //XCTAssertTrue(profileButton.exists)
+        //profileButton.tap()
+   // }
+    
     func testAddingTask() {
         let app = XCUIApplication()
         app.launch()
         let profileButton = app.buttons["ProfileCard_Student"]
-        XCTAssertTrue(profileButton.exists)
+        XCTAssertTrue(profileButton.waitForExistence(timeout: 5))
         profileButton.tap()
+        let schoolGroup = app.buttons["GroupLink_School"]
+        XCTAssertTrue(schoolGroup.waitForExistence(timeout: 5))
+        schoolGroup.tap()
+        let addTaskButton = app.buttons["AddTaskButton"]
+        XCTAssertTrue(addTaskButton.waitForExistence(timeout: 5))
+        addTaskButton.tap()
+        let taskField = app.textFields.matching(identifier: "TaskTitleField_").firstMatch
+        XCTAssertTrue(taskField.waitForExistence(timeout: 5))
+        taskField.tap()
+        taskField.typeText("Complete Assignment")
+        let newTask = app.staticTexts["Complete Assignment"]
+        XCTAssertTrue(newTask.waitForExistence(timeout: 5))
     }
     
     }
