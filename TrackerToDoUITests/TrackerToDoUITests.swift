@@ -91,6 +91,17 @@ final class TrackerToDoUITests: XCTestCase {
         }
     }
     
+    func testAddingTask() {
+        let app = XCUIApplication()
+        app.launch()
+        let addTaskField = app.textFields["Add Task"]
+        addTaskField.tap()
+        addTaskField.typeText("Complete Assignment")
+        let addButton = app.buttons["Add"]
+        addButton.tap()
+        XCTAssertTrue(app.tables.cells.staticTexts["Complete Assignment"].exists)
+    }
+    
     }
 
 
