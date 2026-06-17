@@ -24,79 +24,82 @@ struct ContentView: View {
                     NavigationLink(value: group){
                         Label(group.title, systemImage: group.symbolName)
                     }
+                    .accessibilityIdentifier("GroupLink_\(group.title)")
+                }
+                    
+                }
+                .navigationTitle(profile.name)
+                .listStyle(.sidebar)
+                
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading){
+                        Button{
+                            dismiss()
+                        }label: {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 18, weight: .bold))
+                                .padding(8)
+                                .foregroundStyle(.primary)
+                                .background(Circle().fill(Color.primary.opacity(0.1)))
+                        }
+                    }
+                    ToolbarItem(placement: .primaryAction){
+                        Button {
+                            isShowingAddGroup = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                }
+            } detail: {
+                if let group = selectedGroup {
+                    if let index = profile.groups.firstIndex(where: {$0.id == group.id}){
+                        TaskGroupDetailView(groups: $profile.groups[index])
+                    }
+                }else {
+                    ContentUnavailableView("Select a group", image: "sidebar.left")
                 }
             }
-            .navigationTitle(profile.name)
-            .listStyle(.sidebar)
+            .navigationBarHidden(true)
+            .sheet(isPresented: $isShowingAddGroup) {
+                NewGroupView { newGroup in
+                    profile.groups.append(newGroup)
+                    selectedGroup = newGroup
+                }
+            }
             
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading){
-                    Button{
-                        dismiss()
-                    }label: {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 18, weight: .bold))
-                            .padding(8)
-                            .foregroundStyle(.primary)
-                            .background(Circle().fill(Color.primary.opacity(0.1)))
-                    }
-                }
-                ToolbarItem(placement: .primaryAction){
-                    Button {
-                        isShowingAddGroup = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                }
+            .onAppear(){
+                loadData()
             }
-        } detail: {
-            if let group = selectedGroup {
-                if let index = profile.groups.firstIndex(where: {$0.id == group.id}){
-                    TaskGroupDetailView(groups: $profile.groups[index])
+            .onChange(of: scenePhase){ oldValue, newValue in
+                if newValue == .active{
+                    print("APP IS ACTIVE")
+                } else if newValue == .inactive {
+                    print("Look out user is going out (INACTIVE)")
+                }else if newValue == .background{
+                    saveData()
                 }
-            }else {
-                ContentUnavailableView("Select a group", image: "sidebar.left")
-            }
-        }
-        .navigationBarHidden(true)
-        .sheet(isPresented: $isShowingAddGroup) {
-            NewGroupView { newGroup in
-                profile.groups.append(newGroup)
-                selectedGroup = newGroup
             }
         }
         
-        .onAppear(){
-            loadData()
+        func saveData(){
+            if let encodedData = try? JSONEncoder().encode(profile.groups){
+                UserDefaults.standard.set(encodedData, forKey: saveKey)
+            }
         }
-        .onChange(of: scenePhase){ oldValue, newValue in
-            if newValue == .active{
-                print("APP IS ACTIVE")
-            } else if newValue == .inactive {
-                print("Look out user is going out (INACTIVE)")
-            }else if newValue == .background{
-                saveData()
+        
+        func loadData(){
+            if let savedData = UserDefaults.standard.data(forKey: saveKey){
+                
+                if let decodedGroups = try? JSONDecoder().decode([TaskGroup].self, from: savedData){
+                    profile.groups = decodedGroups
+                    return
+                }
+            }
+            if profile.groups.isEmpty{
+                profile.groups = TaskGroup.sampleData
             }
         }
     }
     
-    func saveData(){
-        if let encodedData = try? JSONEncoder().encode(profile.groups){
-            UserDefaults.standard.set(encodedData, forKey: saveKey)
-        }
-    }
-    
-    func loadData(){
-        if let savedData = UserDefaults.standard.data(forKey: saveKey){
-            
-            if let decodedGroups = try? JSONDecoder().decode([TaskGroup].self, from: savedData){
-                profile.groups = decodedGroups
-                return
-            }
-        }
-        if profile.groups.isEmpty{
-            profile.groups = TaskGroup.sampleData
-        }
-    }
-}
 

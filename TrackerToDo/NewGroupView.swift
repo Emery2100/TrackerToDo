@@ -19,7 +19,7 @@ struct NewGroupView: View {
         NavigationStack{
             Form{
                 Section("Group Name"){
-                    TextField("e.g. Work, School...", text: $groupName)
+                     TextField("e.g. Work, School...", text: $groupName)
                 }
                 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum:40))]){

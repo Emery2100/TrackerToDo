@@ -56,8 +56,48 @@ final class TrackerToDoUITests: XCTestCase {
                 
                 XCTAssertTrue(app.staticTexts["Seleccionar icono"].exists)
             }
-            
         }
     }
     
+        func testNavigateToTaskGroup() {
+                app.launch()
+                
+                let profileButton = app.buttons["ProfileCard_Student"]
+                XCTAssertTrue(profileButton.exists, "The profile button is not found")
+                profileButton.tap()
+                
+                let selectedGroup = app.buttons["GroupLink_School"]
+                XCTAssertTrue(selectedGroup.waitForExistence(timeout: 2), "The grocereis list was never found to be tapped")
+                selectedGroup.tap()
+                
+                let detailTitle = app.navigationBars["School"]
+                XCTAssertTrue(detailTitle.exists, "The detail title is not found")
+            }
+    
+    func testTaskHasPriority() {
+            let task = Task(name: "Buy groceries")
+            task.priority = .high
+            XCTAssertEqual(task.priority, .high)
 }
+    enum Priority {
+        case high, medium, low
+    }
+
+    class Task {
+        var name: String
+        var priority: Priority?
+        init(name: String) {
+            self.name = name
+        }
+    }
+    
+    }
+
+
+        
+
+
+        
+    
+
+  

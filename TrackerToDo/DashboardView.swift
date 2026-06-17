@@ -38,6 +38,7 @@ struct DashboardView: View {
                                     .fontWeight(.bold)
                             }
                             .buttonStyle(PlainButtonStyle())
+                            .accessibilityIdentifier("ProfileCard_\(profile.name)")
                         }
                     }
                 }

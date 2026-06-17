@@ -47,3 +47,7 @@ extension Profile{
         Profile(id: UUID(),name: "John Smith", profileImage: "professorimg", groups: [])
         ]
 }
+
+
+
+
