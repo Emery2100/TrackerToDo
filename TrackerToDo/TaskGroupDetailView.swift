@@ -32,6 +32,7 @@ struct TaskGroupDetailView: View {
                         }
                     }
                     TextField("Task title", text: $task.title)
+                        .accessibilityIdentifier("TaskTitleField")
                         .strikethrough(task.isCompleted)
                         .foregroundColor(task.isCompleted ? .brown : .primary)
                 }
@@ -41,12 +42,14 @@ struct TaskGroupDetailView: View {
             }
         }
         .navigationTitle(groups.title)
-        .toolbar{
-            Button("Add Task"){
-                withAnimation{
+        .toolbar {
+            Button("Add Task") {
+                withAnimation {
                     groups.tasks.append(TaskItem(title: ""))
                 }
+                }
+                .accessibilityIdentifier("AddTaskButton")
             }
         }
     }
-}
+

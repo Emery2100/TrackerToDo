@@ -1,3 +1,4 @@
+
 //
 //  TrackerToDoApp.swift
 //  TrackerToDo
@@ -12,6 +13,7 @@ struct TrackerToDoApp: App {
     var body: some Scene {
         WindowGroup {
             DashboardView()
+            
         }
     }
 }
